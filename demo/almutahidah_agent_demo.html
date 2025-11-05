@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Al Mutahidah Concierge Agent – Live Page Mock</title>
+    <style>
+      :root {
+        color-scheme: light;
+        font-family: "Helvetica Neue", Arial, sans-serif;
+        background-color: #0b1c2c;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        background: radial-gradient(circle at top, #15385a 0%, #061320 55%, #01060b 100%);
+      }
+
+      .frame {
+        width: min(1280px, 100%);
+        height: min(720px, 90vh);
+        border-radius: 20px;
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.55);
+        overflow: hidden;
+        position: relative;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: #f7f9fb;
+      }
+
+      .mock-browser-chrome {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 16px;
+        background: linear-gradient(90deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.6));
+        border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        backdrop-filter: blur(8px);
+      }
+
+      .traffic-light {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+      }
+
+      .traffic-light.red {
+        background: #ff5f57;
+      }
+
+      .traffic-light.yellow {
+        background: #febb2e;
+      }
+
+      .traffic-light.green {
+        background: #28c840;
+      }
+
+      .url-bar {
+        flex: 1;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.85);
+        padding: 6px 12px;
+        font-size: 14px;
+        color: #1d3557;
+        border: 1px solid rgba(29, 53, 87, 0.1);
+      }
+
+      .page-preview {
+        position: absolute;
+        inset: 56px 0 0;
+        overflow: hidden;
+        background: #fff;
+      }
+
+      .page-preview iframe {
+        width: 100%;
+        height: 100%;
+        border: 0;
+        transform: scale(1);
+        transform-origin: center;
+      }
+
+      .chat-widget {
+        position: absolute;
+        right: 32px;
+        bottom: 32px;
+        width: min(360px, 90%);
+        max-height: 80%;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 28px 60px rgba(6, 19, 32, 0.4);
+        border-radius: 20px;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.98);
+        border: 1px solid rgba(10, 38, 71, 0.1);
+        backdrop-filter: blur(6px);
+      }
+
+      .chat-header {
+        background: linear-gradient(120deg, #0e3c66, #1d6fb8);
+        color: #fff;
+        padding: 18px 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .chat-header h1 {
+        font-size: 16px;
+        font-weight: 700;
+        margin: 0;
+      }
+
+      .chat-header span {
+        font-size: 13px;
+        opacity: 0.85;
+      }
+
+      .chat-body {
+        display: flex;
+        flex-direction: column;
+        padding: 16px;
+        gap: 12px;
+        overflow-y: auto;
+        background: linear-gradient(180deg, rgba(246, 250, 255, 0.95), rgba(235, 244, 255, 0.8));
+      }
+
+      .chat-message {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        border-radius: 16px;
+        padding: 12px 14px;
+        max-width: 100%;
+        font-size: 14px;
+        line-height: 1.45;
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.06);
+      }
+
+      .chat-message.user {
+        align-self: flex-end;
+        background: #1d6fb8;
+        color: #fff;
+        border-bottom-right-radius: 4px;
+      }
+
+      .chat-message.agent {
+        align-self: flex-start;
+        background: #fff;
+        color: #0b2447;
+        border-bottom-left-radius: 4px;
+      }
+
+      .chat-message strong {
+        font-weight: 700;
+      }
+
+      .chat-message ul {
+        margin: 6px 0 0;
+        padding-left: 18px;
+      }
+
+      .chat-message ul li {
+        margin-bottom: 4px;
+      }
+
+      .chat-input {
+        padding: 14px 16px;
+        border-top: 1px solid rgba(15, 47, 87, 0.1);
+        background: rgba(255, 255, 255, 0.9);
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .chat-input-row {
+        display: flex;
+        gap: 10px;
+      }
+
+      .chat-input-row input[type="text"] {
+        flex: 1;
+        border-radius: 999px;
+        border: 1px solid rgba(13, 71, 161, 0.2);
+        padding: 12px 18px;
+        font-size: 14px;
+        outline: none;
+      }
+
+      .chat-input-row button {
+        border: none;
+        border-radius: 999px;
+        padding: 12px 20px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        color: #fff;
+        background: linear-gradient(120deg, #1d6fb8, #0e3c66);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .chat-input-row button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 12px 18px rgba(13, 71, 161, 0.2);
+      }
+
+      .quick-prompts {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .quick-prompts button {
+        border: none;
+        border-radius: 18px;
+        padding: 8px 12px;
+        font-size: 12px;
+        background: rgba(30, 136, 229, 0.12);
+        color: #0b2447;
+        cursor: pointer;
+      }
+
+      .quick-prompts button:hover {
+        background: rgba(30, 136, 229, 0.2);
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-size: 11px;
+        background: rgba(255, 255, 255, 0.2);
+        color: #fff;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        align-self: flex-start;
+      }
+
+      .badge svg {
+        width: 14px;
+        height: 14px;
+      }
+
+      .small-print {
+        font-size: 11px;
+        color: rgba(10, 38, 71, 0.65);
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="frame" role="presentation">
+      <div class="mock-browser-chrome">
+        <span class="traffic-light red"></span>
+        <span class="traffic-light yellow"></span>
+        <span class="traffic-light green"></span>
+        <div class="url-bar">https://almutahidah.com/</div>
+      </div>
+      <div class="page-preview" aria-hidden="true">
+        <iframe
+          title="Al Mutahidah home page preview"
+          src="https://almutahidah.com/"
+          loading="lazy"
+        ></iframe>
+      </div>
+      <div class="chat-widget" aria-live="polite">
+        <div class="chat-header">
+          <div class="badge">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M12 2C6.48 2 2 5.58 2 10c0 2.44 1.49 4.64 3.81 6.04L5 22l5.09-2.83c.62.09 1.25.13 1.91.13 5.52 0 10-3.58 10-8s-4.48-8-10-8Z"
+                stroke="white"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+            Always-on concierge
+          </div>
+          <h1>Al Mutahidah Assistant</h1>
+          <span>Book services, get pricing, or ask for recruitment guidance.</span>
+        </div>
+        <div class="chat-body" id="chat-body"></div>
+        <div class="chat-input">
+          <div class="quick-prompts">
+            <button data-message="I need a cleaner in Riyadh tomorrow">Check availability</button>
+            <button data-message="كم سعر عقد عاملة مقيمة ٣ شهور؟">سعر عاملة مقيمة</button>
+            <button data-message="Do you have promos for drivers?">Driver offers</button>
+            <button data-message="How to remove tea stains?">Cleaning tip</button>
+          </div>
+          <div class="chat-input-row">
+            <input
+              id="chat-input"
+              type="text"
+              placeholder="Type a message..."
+              autocomplete="off"
+            />
+            <button id="chat-send" type="button">Send</button>
+          </div>
+          <div class="small-print">
+            Demo only—responses mirror the rule-based concierge agent bundled in this repository.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const SERVICE_PROFILES = {
+        hourly_cleaning: {
+          name_en: "Hourly home cleaning",
+          name_ar: "تنظيف بالساعة",
+          summary_en: "Trained cleaners for 2–8 hour visits with supplies on request.",
+          summary_ar:
+            "عاملات نظافة مدرّبات لزيارات من ٢ إلى ٨ ساعات مع إمكانية توفير الأدوات.",
+          price_from: 99,
+          highlights_en: [
+            "Online booking with instant confirmation",
+            "Professionally trained and vetted cleaners",
+            "Flexible scheduling across major KSA cities",
+          ],
+          highlights_ar: [
+            "حجز إلكتروني بتأكيد فوري",
+            "عاملات مدرّبات ومفوّضات رسميًا",
+            "مواعيد مرنة تغطي أغلب مدن المملكة",
+          ],
+        },
+        monthly_helper: {
+          name_en: "Monthly resident domestic helper",
+          name_ar: "عاملة مقيمة شهرية",
+          summary_en:
+            "Live-in helper contracts covering accommodation, onboarding, and replacements.",
+          summary_ar:
+            "عقود عاملة منزلية مقيمة مع السكن والاستقبال والاستبدال متى احتجت.",
+          price_from: 3499,
+          highlights_en: [
+            "Flexible 1–12 month contracts",
+            "Replacement guarantee and HR support",
+            "Philippine, Indonesian, and other nationalities",
+          ],
+          highlights_ar: [
+            "عقود مرنة من شهر حتى ١٢ شهر",
+            "ضمان استبدال ودعم موارد بشرية",
+            "خيارات متعددة للجنسيات من الفلبين وغيرها",
+          ],
+        },
+        monthly_driver: {
+          name_en: "Monthly resident driver",
+          name_ar: "سائق خاص مقيم",
+          summary_en: "Qualified KSA-licensed drivers for household or personal needs.",
+          summary_ar: "سائقون مؤهلون برخصة سعودية لخدمة الأسر والأفراد.",
+          price_from: 3799,
+          highlights_en: [
+            "Drivers screened and licensed in KSA",
+            "Contracts include accommodation support",
+            "Ideal for family transportation needs",
+          ],
+          highlights_ar: [
+            "سائقون مجتازون للفحص وبرخصة سارية",
+            "يشمل الدعم في السكن والمتابعة",
+            "مثالي لتنقلات الأسرة اليومية",
+          ],
+        },
+        business: {
+          name_en: "Business services",
+          name_ar: "حلول قطاع الأعمال",
+          summary_en: "Dedicated manpower solutions and facility support for businesses.",
+          summary_ar: "حلول قوى عاملة وخدمات تشغيلية مخصصة للشركات.",
+          price_from: 0,
+          highlights_en: [
+            "Custom SLAs and onboarding",
+            "Experienced corporate account managers",
+            "Support for hospitality, retail, and offices",
+          ],
+          highlights_ar: [
+            "اتفاقيات خدمة مخصصة",
+            "مديرو حسابات خبراء للقطاع التجاري",
+            "خدمات للضيافة والتجزئة والمكاتب",
+          ],
+        },
+        recruitment: {
+          name_en: "Recruitment & mediation",
+          name_ar: "الاستقدام والوساطة",
+          summary_en: "Full recruitment journey management including Philippine workforce.",
+          summary_ar: "إدارة متكاملة لرحلة الاستقدام بما فيها الأيدي العاملة الفلبينية.",
+          price_from: 0,
+          highlights_en: [
+            "Licensed mediation with POEA/DMW partners",
+            "Document guidance and embassy coordination",
+            "Optional airport pickup and onboarding",
+          ],
+          highlights_ar: [
+            "وساطة مرخّصة مع شركاء معتمدين",
+            "إرشاد للمستندات والتنسيق مع السفارات",
+            "استقبال المطار وخدمة ما بعد الوصول",
+          ],
+        },
+      };
+
+      const SERVICE_KEYWORDS = {
+        hourly_cleaning: {
+          en: ["clean", "hourly", "maid", "housekeeper"],
+          ar: ["تنظيف", "عاملة", "بالساعة", "نظافة"],
+        },
+        monthly_helper: {
+          en: ["live-in", "helper", "maid", "resident"],
+          ar: ["مقيمة", "شهرية", "عاملة", "خادمة"],
+        },
+        monthly_driver: {
+          en: ["driver", "chauffeur"],
+          ar: ["سائق", "سواقة"],
+        },
+        business: {
+          en: ["business", "company", "corporate"],
+          ar: ["شركات", "أعمال", "قطاع"],
+        },
+        recruitment: {
+          en: ["recruit", "visa", "mediation"],
+          ar: ["استقدام", "تأشيرة", "وساطة"],
+        },
+      };
+
+      const KEYWORD_GROUPS = {
+        pricing: {
+          ar: ["سعر", "كم", "التكلفة", "العرض"],
+          en: ["price", "cost", "quote", "rate"],
+        },
+        availability: {
+          ar: ["متى", "متاح", "بكرة", "أقرب", "جدول"],
+          en: ["available", "availability", "slot", "schedule"],
+        },
+        offers: {
+          ar: ["عرض", "عروض", "خصم"],
+          en: ["offer", "promo", "discount"],
+        },
+        tips: {
+          ar: ["نصائح", "طريقة", "كيف"],
+          en: ["tips", "how", "best way"],
+        },
+      };
+
+      const chatBody = document.getElementById("chat-body");
+      const chatInput = document.getElementById("chat-input");
+      const chatSend = document.getElementById("chat-send");
+      const quickButtons = document.querySelectorAll(".quick-prompts button");
+
+      const conversation = [];
+
+      function detectLanguage(message) {
+        return /[\u0600-\u06FF]/.test(message) ? "ar" : "en";
+      }
+
+      function matchService(message) {
+        const lowered = message.toLowerCase();
+        let bestService = null;
+        let bestScore = 0;
+        for (const [service, keywords] of Object.entries(SERVICE_KEYWORDS)) {
+          const uniqueKeywords = new Set([...keywords.en, ...keywords.ar].map((k) => k.toLowerCase()));
+          let score = 0;
+          uniqueKeywords.forEach((keyword) => {
+            if (lowered.includes(keyword)) {
+              score += 1;
+            }
+          });
+          if (score > bestScore) {
+            bestService = service;
+            bestScore = score;
+          }
+        }
+        return bestService;
+      }
+
+      function containsAny(text, keywords) {
+        return keywords.some((keyword) => text.includes(keyword.toLowerCase()));
+      }
+
+      function detectTopic(message, language) {
+        const lowered = message.toLowerCase();
+        if (containsAny(lowered, KEYWORD_GROUPS.pricing[language])) {
+          return "pricing";
+        }
+        if (containsAny(lowered, KEYWORD_GROUPS.availability[language])) {
+          return "availability";
+        }
+        if (containsAny(lowered, KEYWORD_GROUPS.offers[language])) {
+          return "offers";
+        }
+        if (containsAny(lowered, KEYWORD_GROUPS.tips[language])) {
+          return "tips";
+        }
+        return "overview";
+      }
+
+      function formatCurrency(value, language) {
+        if (!value) return null;
+        const locale = language === "ar" ? "ar-SA" : "en-US";
+        return value.toLocaleString(locale);
+      }
+
+      function agentResponse(message) {
+        const language = detectLanguage(message);
+        const service = matchService(message);
+        const topic = detectTopic(message, language);
+
+        if (topic === "pricing" && service) {
+          return handlePricing(service, language);
+        }
+        if (topic === "availability" && service) {
+          return handleAvailability(service, language);
+        }
+        if (topic === "offers") {
+          return handleOffers(service, language);
+        }
+        if (topic === "tips") {
+          return handleGeneralTips(language);
+        }
+        if (service) {
+          return handleServiceOverview(service, language);
+        }
+        return handleDefault(language);
+      }
+
+      function handlePricing(service, language) {
+        const profile = SERVICE_PROFILES[service];
+        const price = formatCurrency(profile.price_from, language);
+        if (language === "ar") {
+          const summary = price
+            ? `سعر ${profile.name_ar} بدأ من **${price} ريال** شهريًا حسب المدينة والخطة.`
+            : `تكلفة ${profile.name_ar} تعتمد على احتياجك، ونحسبها لك مباشرة.`;
+          const actions = [
+            "التالي → أرسل المدينة ومدة العقد/عدد الساعات وأي كود خصم للتحقق وإصدار العرض.",
+          ];
+          return { summary, actions };
+        }
+        const summary = price
+          ? `Pricing for ${profile.name_en} starts from **SAR ${price}** depending on city and plan.`
+          : `The cost for ${profile.name_en} depends on your exact requirements; I can quote it now.`;
+        const actions = [
+          "Next → Share your city, desired duration, and any promo code so I can lock the quote.",
+        ];
+        return { summary, actions };
+      }
+
+      function handleAvailability(service, language) {
+        const profile = SERVICE_PROFILES[service];
+        if (language === "ar") {
+          return {
+            summary: `حاضر—أقدر أشيك على توفر ${profile.name_ar} في مدينتك.`,
+            actions: [
+              "التالي → عطنا المدينة، التاريخ، والوقت المفضل مع عدد الساعات للتأكد من التوفر فورًا.",
+            ],
+          };
+        }
+        return {
+          summary: `Sure—I can check ${profile.name_en} availability for your city.`,
+          actions: [
+            "Next → Send the city, preferred date/time, and hours so I can confirm the schedule.",
+          ],
+        };
+      }
+
+      function handleOffers(service, language) {
+        if (language === "ar") {
+          const target = service ? SERVICE_PROFILES[service].name_ar : "الخدمة المطلوبة";
+          const summary = `أتحقق من العروض المتاحة لـ${target} الآن.`;
+          const actions = [
+            service
+              ? "التالي → اكتب المدينة والخدمة المطلوبة لأرسل لك الخصومات السارية أو كود العرض."
+              : "التالي → حدد الخدمة والمدينة لعرض الخصومات الحالية.",
+          ];
+          return { summary, actions };
+        }
+        const target = service ? SERVICE_PROFILES[service].name_en : "the service you need";
+        const summary = `Let me check active offers for ${target}.`;
+        const actions = [
+          service
+            ? "Next → Tell me the city and service so I can share available promos."
+            : "Next → Specify the service and city to see current discounts.",
+        ];
+        return { summary, actions };
+      }
+
+      function handleGeneralTips(language) {
+        if (language === "ar") {
+          return {
+            summary: "إليك نصيحة عامة—تذكر أنها إرشادات منزلية وليست سياسة رسمية للشركة.",
+            actions: [
+              "نظّف البقعة سريعًا بمنديل قطن مبلل بماء فاتر ومنظف خفيف.",
+              "جرّب في زاوية مخفية قبل التطبيق الكامل.",
+              "احجز زيارة تنظيف عميق لو احتجت دعم إضافي.",
+            ],
+          };
+        }
+        return {
+          summary: "Here’s a quick general tip—this is housekeeping advice, not a formal policy.",
+          actions: [
+            "Blot the spot with a damp cloth and mild cleaner immediately.",
+            "Test products on a hidden area first.",
+            "Book a deep-cleaning visit if you want professional help.",
+          ],
+        };
+      }
+
+      function handleServiceOverview(service, language) {
+        const profile = SERVICE_PROFILES[service];
+        if (language === "ar") {
+          return {
+            summary: `${profile.name_ar}: ${profile.summary_ar}`,
+            actions: [
+              ...profile.highlights_ar,
+              "التالي → حدد المدينة والخدمة المطلوبة لنكمل الحجز أو التسعير.",
+            ],
+          };
+        }
+        return {
+          summary: `${profile.name_en}: ${profile.summary_en}`,
+          actions: [
+            ...profile.highlights_en,
+            "Next → Tell me your city and timing so I can proceed with booking or pricing.",
+          ],
+        };
+      }
+
+      function handleDefault(language) {
+        if (language === "ar") {
+          return {
+            summary: "أهلاً! أنا مساعد المتحدة للخدمات المنزلية ومستعد أساعدك.",
+            actions: [
+              "التالي → أخبرني بالخدمة (تنظيف، عاملة مقيمة، سائق، شركات، استقدام) والمدينة للبدء فورًا.",
+            ],
+          };
+        }
+        return {
+          summary: "Hi! I’m the Al Mutahidah concierge and ready to help.",
+          actions: [
+            "Next → Let me know the service (hourly cleaning, resident helper, driver, business, recruitment) and your city to get started.",
+          ],
+        };
+      }
+
+      function addMessage(content, role) {
+        const wrapper = document.createElement("div");
+        wrapper.className = `chat-message ${role}`;
+        if (role === "agent") {
+          const [summary, ...actions] = Array.isArray(content)
+            ? content
+            : [content.summary, ...(content.actions || [])];
+          const summaryElement = document.createElement("div");
+          summaryElement.innerHTML = summary.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+          wrapper.appendChild(summaryElement);
+          if (actions.length) {
+            const list = document.createElement("ul");
+            actions.forEach((action) => {
+              const li = document.createElement("li");
+              li.textContent = action;
+              list.appendChild(li);
+            });
+            wrapper.appendChild(list);
+          }
+        } else {
+          wrapper.textContent = content;
+        }
+        chatBody.appendChild(wrapper);
+        chatBody.scrollTop = chatBody.scrollHeight;
+      }
+
+      function sendMessage(text) {
+        if (!text.trim()) return;
+        addMessage(text, "user");
+        conversation.push({ role: "user", text });
+        const response = agentResponse(text);
+        conversation.push({ role: "agent", response });
+        addMessage(response, "agent");
+      }
+
+      chatSend.addEventListener("click", () => {
+        const text = chatInput.value;
+        chatInput.value = "";
+        sendMessage(text);
+        chatInput.focus();
+      });
+
+      chatInput.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" && !event.shiftKey) {
+          event.preventDefault();
+          chatSend.click();
+        }
+      });
+
+      quickButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          chatInput.value = "";
+          sendMessage(button.dataset.message);
+        });
+      });
+
+      // Seed default greeting
+      addMessage(agentResponse(""), "agent");
+    </script>
+  </body>
+</html>

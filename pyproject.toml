@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ai-agent"
+version = "0.1.0"
+description = "Rule-based concierge agent for Al Mutahidah"
+readme = "README.md"
+authors = [{ name = "Al Mutahidah" }]
+license = { text = "MIT" }
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7"]
